@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/data/jpa
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+    
+    <bean id="UserDetailsServiceImpl" class="com.reconciler.service.UserDetailsServiceImpl"/>
+	
+	<sec:http>
+	
+		<sec:access-denied-handler error-page="/home?access"/>
+		
+		<sec:intercept-url pattern="/resources/**" access="permitAll"/>
+		<sec:intercept-url pattern="/login**" access="permitAll"/>
+		<sec:intercept-url pattern="/test" access="hasAuthority('Test')" />
+		<sec:intercept-url pattern="/**" access="isAuthenticated()" />
+		
+		<sec:form-login
+		    login-page="/login"
+		    default-target-url="/"
+			authentication-failure-url="/login?error"
+			username-parameter="username"
+			password-parameter="password" />
+		<sec:logout logout-success-url="/login?logout" />
+		
+		<sec:csrf/>
+		
+	</sec:http>
+
+	<sec:authentication-manager>
+		<sec:authentication-provider user-service-ref="UserDetailsServiceImpl">
+			<sec:password-encoder ref="passwordEncoder"/>
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+	
+	<bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+		
+	<context:component-scan base-package="com.reconciler.web" />
+	
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost/reconciler"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+
+    <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="showSql" value="true"/>
+        <property name="database" value="MYSQL"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+        <property name="jpaProperties">  
+           <props>  
+               <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+           </props>  
+      	</property> 
+        <property name="packagesToScan" value="com.reconciler.model"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
+    
+	<jpa:repositories base-package="com.reconciler.repository" />
+
+</beans>
