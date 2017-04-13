@@ -70,7 +70,9 @@
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
-    
+   
+    <bean id="dataSourceBuilder" class="com.reconciler.repository.util.DataSourceFactory" />
+	
 	<jpa:repositories base-package="com.reconciler.repository" />
 
 </beans>
