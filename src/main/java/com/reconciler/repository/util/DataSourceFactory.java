@@ -7,17 +7,15 @@ import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.stereotype.Component;
 
 
 public class DataSourceFactory extends AbstractDataSource  {
 
 
 	public  DataSource buildDataSource(String url,String driverClass,String user,String password) {
-        return DataSourceBuilder.create()
-            .driverClassName(driverClass)
-            .url(url)
-            .username(user).password(password)
-            .build();
+        return DataSourceBuilder.create().driverClassName(driverClass).url(url)
+            .username(user).password(password).build();
     }
 	
 	public  JdbcTemplate getJdbcTemplate(DataSource datasource){

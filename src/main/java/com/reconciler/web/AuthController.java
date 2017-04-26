@@ -40,7 +40,7 @@ public class AuthController {
         return "login";
     }
     
-    @PostConstruct
+   // @PostConstruct
     public void run(){
 
     	Role r1 = new Role();

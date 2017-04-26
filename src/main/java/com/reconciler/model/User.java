@@ -1,5 +1,6 @@
 package com.reconciler.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements Serializable  {
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column
